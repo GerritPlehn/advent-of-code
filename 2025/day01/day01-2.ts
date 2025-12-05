@@ -1,5 +1,3 @@
-// INCOMPLETE
-
 import { readFile } from "node:fs/promises";
 
 async function main() {
