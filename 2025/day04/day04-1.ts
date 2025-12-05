@@ -1,24 +1,25 @@
-// INCOMPLETE
 import { readFile } from "node:fs/promises";
 
 async function main() {
-	const input = (await readFile("2025/day04/input.sample.txt", "utf8")).split(
+	const input = (await readFile("2025/day04/input.txt", "utf8")).split(
 		"\n",
 	);
 
 	const rows = input.length;
 	const cols = input.at(0)?.length ?? 0;
-	let accessibleCells = 0;
+	let accessibleRolls = 0;
 
 	for (let i = 0; i < rows; i++) {
 		for (let j = 0; j < cols; j++) {
-			if (checkCellNeighbors(i, j) <= 4) {
-				accessibleCells++;
+			if (input[i]?.[j] !== "@") continue // not a roll
+			if (checkCellNeighbors(i, j) < 4) {
+				console.log(`cell ${i},${j} is accessible`)
+				accessibleRolls++;
 			}
 		}
 	}
 
-	console.log(`${accessibleCells} accessible cells`);
+	console.log(`${accessibleRolls} accessible cells`);
 
 	function checkCellNeighbors(row: number, col: number, neighbors = 1) {
 		let occupiedNeighbors = 0;
@@ -32,11 +33,15 @@ async function main() {
 				j <= Math.min(cols - 1, col + neighbors);
 				j++
 			) {
-				console.log(`${i},${j}: ${input[i]?.[j]}`);
-				if (input[i]?.[j] === "@" && (i !== row || j !== col)) {
+				//console.log(`${i},${j}: ${input[i]?.[j]}`);
+				if (input[i]?.[j] === "@") {
 					occupiedNeighbors++;
 				}
 			}
+		}
+		// don't count yourself as occupied
+		if (input[row]?.[col] === "@") {
+			occupiedNeighbors--
 		}
 		console.log(
 			`cell ${row},${col} has ${occupiedNeighbors} occupied neighbors`,
